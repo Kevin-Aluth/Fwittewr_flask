@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Home: posts</title>
+{% endblock %}
+
+{% block body %}
+<div class="mx-auto">
+    {% for post in posts %}
+    <div class="col-12">
+        <figure>
+            <figcaption class="blockquite-footer">
+                <b>{{ post.user.username }}</b> <br>
+                {{ post.creation_date.strftime('%d/%m/%Y, %H:%M') }}
+            </figcaption>
+            {% if post.title %}
+            <p class="display-4">{{ post.title }}</p>
+            {% endif %}
+            <p class="blockquote">{{ post.content }}</p>
+
+            <button onclick="like_post(this, '{{ post.id }}')" style="background-color:transparent; border:0px">
+                {% if current_user in post.liked_users %}
+                    <img style="width: 30px" src="{{ url_for('static', filename='icons/heart-fill.svg') }}" alt="">
+                {% else %}
+                    <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
+                {% endif %}
+                <span class="likes-count">{{ post.liked_users|length }}</span>
+            </button>
+        </figure>
+        <hr>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const like_url = "{{ url_for('home.like_post') }}"
+    const url_heart_fill_src = "{{ url_for('static', filename='icons/heart-fill.svg') }}"
+    const url_heart_src = "{{ url_for('static', filename='icons/heart.svg') }}"
+    const csrf_token = "{{ csrf_token() }}"
+
+    function like_post(btn, id) {
+
+        fetch(like_url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrf_token
+            },
+            body: JSON.stringify({'post_id': parseInt(id)})
+        })
+        .then(response => response.json() )
+        .then(responseJson => {
+            if (responseJson.result === "liked") {
+                btn.querySelector("img").src = url_heart_fill_src;
+            } else {
+                btn.querySelector("img").src = url_heart_src; 
+            }
+
+            btn.querySelector("span").innerText = responseJson.likes;
+        })
+
+    }
+</script>
+{% endblock %}
