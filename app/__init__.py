@@ -3,6 +3,7 @@ from .extensions import db, bcrypt, login_manager, csrf
 from .models import User
 from .routes.auth_bp import auth_bp
 from .routes.home_bp import home_bp
+from .routes.errors_bp import errors_bp
 
 def create_app():
     app = Flask(__name__)
@@ -22,5 +23,6 @@ def create_app():
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(home_bp)
+    app.register_blueprint(errors_bp)
 
     return app

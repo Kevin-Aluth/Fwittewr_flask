@@ -1,58 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
-    {% block title %}
-    {% endblock %}
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+	{% block title %}
+	{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Fwittewr</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('home.posts') }}">Posts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('home.create_post') }}">Create post</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
-            </li>
-        </div>
-      </div>
-    </nav>
-    <div class="container">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% if category == 'error' %}
-                  <div class="alert alert-danger">
-                      {{ message }}
-                  </div>
-                {% elif category == 'success' %}
-                  <div class="alert alert-success">
-                    {{ message }}
-                  </div>
-              {% endif %}
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+	<nav class="navbar navbar-expand-lg bg-body-tertiary">
+		<div class="container-fluid">
+		<a class="navbar-brand" href="#">Fwittewr</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for('home.posts') }}">Posts</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for('home.create_post') }}">Create post</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+			</li>
+		</div>
+		</div>
+	</nav>
+	<div class="container">
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				{% if category == 'error' %}
+					<div class="alert alert-danger">
+						{{ message }}
+					</div>
+				{% elif category == 'success' %}
+					<div class="alert alert-success">
+					{{ message }}
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
 
-      {% block body %}
-      {% endblock %}
-    </div>
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    {% block scripts %}
-    {% endblock %}
+		{% block body %}
+		{% endblock %}
+	</div>
+	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	<script>
+		const like_post_url = "{{ url_for('home.like_post') }}"
+		const like_comment_url = "{{ url_for('home.like_comment') }}"
+		const url_heart_fill_src = "{{ url_for('static', filename='icons/heart-fill.svg') }}"
+		const url_heart_src = "{{ url_for('static', filename='icons/heart.svg') }}"
+		const csrf_token = "{{ csrf_token() }}"
+	
+		function like_post(btn, id) {
+	
+			fetch(like_post_url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrf_token
+				},
+				body: JSON.stringify({'post_id': parseInt(id)})
+			})
+			.then(response => response.json() )
+			.then(responseJson => {
+				if (responseJson.result === "liked") {
+					btn.querySelector("img").src = url_heart_fill_src;
+				} else {
+					btn.querySelector("img").src = url_heart_src; 
+				}
+	
+				btn.querySelector("span").innerText = responseJson.likes;
+			})
+	
+		}
+
+		function like_comment(btn, id) {
+	
+			fetch(like_comment_url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrf_token
+				},
+				body: JSON.stringify({'comment_id': parseInt(id)})
+			})
+			.then(response => response.json() )
+			.then(responseJson => {
+				if (responseJson.result === "liked") {
+					btn.querySelector("img").src = url_heart_fill_src;
+				} else {
+					btn.querySelector("img").src = url_heart_src; 
+				}
+	
+				btn.querySelector("span").innerText = responseJson.likes;
+			})
+	
+		}
+	</script>
 </body>
 </html>

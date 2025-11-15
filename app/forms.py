@@ -21,6 +21,3 @@ class CreatePostForm(FlaskForm):
     title = StringField(validators=[Length(min=0, max=50)], render_kw={'placeholder':'Title', 'class':'form-control'})
     content = TextAreaField(validators=[DataRequired(), Length(min=4, max=200)], render_kw={'placeholder':'Content', 'class':'form-control'})
     submit = SubmitField('Post', render_kw={'class':'btn btn-primary mt-1 w-100'})
-
-class LikeForm(FlaskForm):
-    post_id = HiddenField()

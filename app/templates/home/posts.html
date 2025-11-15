@@ -24,43 +24,15 @@
                 {% else %}
                     <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
                 {% endif %}
-                <span class="likes-count">{{ post.liked_users|length }}</span>
+                <span>{{ post.liked_users|length }}</span>
             </button>
+            <a href="{{ url_for('home.show_post_comments', id=post.id) }}" style="text-decoration: none; border:0px; color: black">
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
+                <span>{{ post.comments|length }}</span>
+            </a>
         </figure>
         <hr>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    const like_url = "{{ url_for('home.like_post') }}"
-    const url_heart_fill_src = "{{ url_for('static', filename='icons/heart-fill.svg') }}"
-    const url_heart_src = "{{ url_for('static', filename='icons/heart.svg') }}"
-    const csrf_token = "{{ csrf_token() }}"
-
-    function like_post(btn, id) {
-
-        fetch(like_url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrf_token
-            },
-            body: JSON.stringify({'post_id': parseInt(id)})
-        })
-        .then(response => response.json() )
-        .then(responseJson => {
-            if (responseJson.result === "liked") {
-                btn.querySelector("img").src = url_heart_fill_src;
-            } else {
-                btn.querySelector("img").src = url_heart_src; 
-            }
-
-            btn.querySelector("span").innerText = responseJson.likes;
-        })
-
-    }
-</script>
 {% endblock %}
