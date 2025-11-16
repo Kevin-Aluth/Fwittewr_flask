@@ -110,6 +110,10 @@
 		}
 
 		function delete_post(btn, id) {
+			if (!confirm("This post will be deleted, are you sure?")) {
+				return;
+			}
+
 			fetch(delete_post_url, {
 				method: "POST",
 				headers: {
@@ -128,6 +132,10 @@
 		}
 
 		function delete_comment(btn, id) {
+			if (!confirm("This comment will be deleted, are you sure?")) {
+				return;
+			}
+
 			fetch(delete_comment_url, {
 				method: "POST",
 				headers: {
