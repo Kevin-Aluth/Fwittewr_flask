@@ -39,9 +39,10 @@ A simple **Twitter-like social network** built with **Flask**.
 ```
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies Used (dependencies)
 
 - Flask
+- Flask Login
 - SQLAlchemy
 - Jinja2
 - Flask-WTF
