@@ -31,6 +31,7 @@ class Post(db.Model):
     title = db.Column(db.String(50))
     content = db.Column(db.String(200), nullable=False)
     creation_date = db.Column(db.DateTime(timezone=True), default=datetime.now(timezone.utc))
+    deleted = db.Column(db.Boolean, default=False)
     
     comments = db.relationship('Comment', backref='referenced_post', lazy='select')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -39,6 +40,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
     creation_date = db.Column(db.DateTime(timezone=True), default=datetime.now(timezone.utc))
+    deleted = db.Column(db.Boolean, default=False)
 
     comments = db.relationship('Comment', backref=backref('referenced_comment', remote_side=[id]), lazy='select')
     referenced_comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))

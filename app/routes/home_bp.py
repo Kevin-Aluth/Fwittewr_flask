@@ -10,7 +10,7 @@ home_bp = Blueprint('home', __name__)
 @home_bp.route('/posts')
 @login_required
 def posts():
-    posts = Post.query.order_by(func.random()).limit(10).all()
+    posts = Post.query.filter_by(deleted=False).order_by(func.random()).limit(10).all()
     return render_template('home/posts.html', posts=posts)
 
 @home_bp.route('/create-post', methods=['GET', 'POST'])
@@ -101,3 +101,34 @@ def show_comment_comments(id):
         return redirect(url_for('home.show_comment_comments', id=id))
     
     return render_template('home/comments/comment-comments.html', post=comment, form=form)
+
+@home_bp.route('/delete-post', methods=['POST'])
+@login_required
+def delete_post():
+    data = request.json
+    id = data['post_id']
+    post = Post.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    post.content = '[this post was deleted]'
+    post.title = '[Deleted Post]'
+    post.deleted = True
+    db.session.commit()
+    return jsonify({
+        'result': 'deleted', 
+        'title': post.title, 
+        'content': post.content
+    })
+
+@home_bp.route('/delete-comment', methods=['POST'])
+@login_required
+def delete_comment():
+    data = request.json
+    id = data['comment_id']
+    comment = Comment.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    comment.content = '[this comment was deleted]'
+    comment.deleted = True
+    db.session.commit()
+    return jsonify({
+        'result': 'deleted',
+        'content': comment.content
+    })
+

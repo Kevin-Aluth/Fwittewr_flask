@@ -55,6 +55,10 @@
 	<script>
 		const like_post_url = "{{ url_for('home.like_post') }}"
 		const like_comment_url = "{{ url_for('home.like_comment') }}"
+
+		const delete_post_url = "{{ url_for('home.delete_post') }}"
+		const delete_comment_url = "{{ url_for('home.delete_comment') }}"
+
 		const url_heart_fill_src = "{{ url_for('static', filename='icons/heart-fill.svg') }}"
 		const url_heart_src = "{{ url_for('static', filename='icons/heart.svg') }}"
 		const csrf_token = "{{ csrf_token() }}"
@@ -103,6 +107,41 @@
 				btn.querySelector("span").innerText = responseJson.likes;
 			})
 	
+		}
+
+		function delete_post(btn, id) {
+			fetch(delete_post_url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrf_token
+				},
+				body: JSON.stringify({'post_id': parseInt(id)})
+			})
+			.then(response => response.json())
+			.then(responseJson => {
+				if (responseJson.result === "deleted") {
+					btn.closest("figure").querySelector(".post-title").innerText = responseJson.title
+					btn.closest("figure").querySelector(".post-content").innerText = responseJson.content
+				}
+			})
+		}
+
+		function delete_comment(btn, id) {
+			fetch(delete_comment_url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrf_token
+				},
+				body: JSON.stringify({'comment_id': parseInt(id)})
+			})
+			.then(response => response.json())
+			.then(responseJson => {
+				if (responseJson.result === "deleted") {
+					btn.closest("figure").querySelector(".comment-content").innerText = responseJson.content
+				}
+			})
 		}
 	</script>
 </body>

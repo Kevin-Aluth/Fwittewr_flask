@@ -16,10 +16,7 @@
                 <b>{{ post.user.username }}</b> <br>
                 {{ post.creation_date.strftime('%d/%m/%Y, %H:%M') }}
             </figcaption>
-            {% if post.title %}
-            <p class="display-4">{{ post.title }}</p>
-            {% endif %}
-            <p class="blockquote">{{ post.content }}</p>
+            <p class="blockquote comment-content">{{ post.content }}</p>
 
             <button onclick="like_comment(this, '{{ post.id }}')" style="background-color:transparent; border:0px">
                 {% if current_user in post.liked_users %}
@@ -29,6 +26,11 @@
                 {% endif %}
                 <span>{{ post.liked_users|length }}</span>
             </button>
+            {% if post.user == current_user %}
+            <button onclick="delete_comment(this, '{{ post.id }}')" style="background-color: transparent; border: 0px; text-decoration: none">
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/trash3.svg') }}" alt="">
+            </button>
+            {% endif %}
         </figure>
         <hr>
     </div>
@@ -41,7 +43,7 @@
         {{ form.submit }}
     </form>
     <div class="mt-5">
-    {% for comment in post.comments %}
+    {% for comment in post.comments | selectattr('deleted', 'equalto', False) %}
         <div class="col-12">
             <figure>
                 <figcaption class="blockquite-footer">
