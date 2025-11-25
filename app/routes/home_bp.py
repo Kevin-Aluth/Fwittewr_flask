@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
-from ..models import Post, Comment
+from ..models import Post, Comment, User
 from ..forms import CreatePostForm
 from ..extensions import db
 from sqlalchemy import func
@@ -132,3 +132,8 @@ def delete_comment():
         'content': comment.content
     })
 
+@home_bp.route('/show-user/<id>')
+@login_required
+def show_user(id):
+    user = User.query.filter_by(id=id).first_or_404()
+    return render_template('home/user.html', user=user)

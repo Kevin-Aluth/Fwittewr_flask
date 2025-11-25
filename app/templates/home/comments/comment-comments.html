@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
+{% from 'home/post-macros.html' import comment_to_render, back_button %}
+
+{% block title %}
+<title>Comments</title>
+{% endblock %}
+
 {% block body %}
 <div class="mx-auto">
-    {% if post.referenced_post %}
-        <a href="{{ url_for('home.show_post_comments', id=post.referenced_post.id) }}">
-            <img style="width: 30px" src="{{ url_for('static', filename='icons/arrow-left.svg') }}" alt="">
-        </a>
-    {% elif post.referenced_comment %}
-        <a href="{{ url_for('home.show_comment_comments', id=post.referenced_comment.id) }}">
-            <img src="{{ url_for('static', filename='icons/arrow-left.svg') }}" alt="">
-        </a>
-    {% endif %}
+    {{ back_button() }}
     <div class="col-12 mt-3">
+        {% if post.referenced_post %}
+            <a href="{{ url_for('home.show_post_comments', id=post.referenced_post.id) }}">go to referenced post</a>
+        {% elif post.referenced_comment %}
+            <a href="{{ url_for('home.show_comment_comments', id=post.referenced_comment.id) }}">go to referenced comment</a>
+        {% endif %}
         <figure>
             <figcaption class="blockquite-footer">
                 <b>{{ post.user.username }}</b> <br>
@@ -44,29 +47,7 @@
     </form>
     <div class="mt-5">
     {% for comment in post.comments | selectattr('deleted', 'equalto', False) %}
-        <div class="col-12">
-            <figure>
-                <figcaption class="blockquite-footer">
-                    <b>{{ comment.user.username }}</b> <br>
-                    {{ comment.creation_date.strftime('%d/%m/%Y, %H:%M') }}
-                </figcaption>
-                <p class="blockquote">{{ comment.content }}</p>
-                
-                <button onclick="like_comment(this, '{{ comment.id }}')" style="background-color:transparent; border:0px">
-                    {% if current_user in comment.liked_users %}
-                        <img style="width: 30px" src="{{ url_for('static', filename='icons/heart-fill.svg') }}" alt="">
-                    {% else %}
-                        <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
-                    {% endif %}
-                    <span>{{ comment.liked_users|length }}</span>
-                </button>
-                <a style="text-decoration: none; border:0px; color: black" href="{{ url_for('home.show_comment_comments', id=comment.id) }}">
-                    <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
-                    <span>{{ comment.comments|length }}</span>
-                </a>
-            </figure>
-            <hr>
-        </div>
+        {{ comment_to_render(comment, current_user) }}
     {% endfor %}
     </div>
 </div>

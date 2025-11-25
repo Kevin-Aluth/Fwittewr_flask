@@ -53,6 +53,13 @@
 	</div>
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 	<script>
+		window.addEventListener("pageshow", function (event) {
+			// if page is loaded from cache (e.g. went back, reload the page)
+			if (event.persisted) {
+				window.location.reload();
+			}
+		});
+
 		const like_post_url = "{{ url_for('home.like_post') }}"
 		const like_comment_url = "{{ url_for('home.like_comment') }}"
 

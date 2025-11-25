@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
+{% from 'home/post-macros.html' import post_to_render, comment_to_render %}
 
 {% block title %}
 <title>User</title>
 {% endblock %}
 
-{% block home %}
+{% block body %}
 <div>
-    <p class="display-2">{{ user.username }}</p>
+    <p class="display-2"><b>{{ user.username }}</b></p>
+    <p class="display-3 mt-3">{{ user.username }}'s posts</p>
+    <div class="mt-2">
+    {% for post in user.created_posts %}
+    {{ post_to_render(post) }}
+    {% endfor %}
+    </div>
+    <p class="display-3 mt-3">{{ user.username }}'s comments</p>
+    {% for comment in user.created_comments %}
+    {{ comment_to_render(comment) }}
+    {% endfor %}
 </div>
 {% endblock %}

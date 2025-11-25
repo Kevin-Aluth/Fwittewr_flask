@@ -1,0 +1,61 @@
+{% macro post_to_render(post, current_user) %}
+<div class="col-12">
+    <figure>
+        <figcaption>
+            <a href="{{ url_for('home.show_user', id=post.user.id) }}" style="color: black; text-decoration: none">
+                <b>{{ post.user.username }}</b> <br>
+            </a>
+            {{ post.creation_date.strftime('%d/%m/%Y, %H:%M') }}
+        </figcaption>
+        {% if post.title %}
+        <p class="display-4">{{ post.title }}</p>
+        {% endif %}
+        <p class="blockquote">{{ post.content }}</p>
+        <button onclick="like_post(this, '{{ post.id }}')" style="background-color:transparent; border:0px">
+            {% if current_user in post.liked_users %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart-fill.svg') }}" alt="">
+            {% else %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
+            {% endif %}
+            <span>{{ post.liked_users|length }}</span>
+        </button>
+        <a href="{{ url_for('home.show_post_comments', id=post.id) }}" style="text-decoration: none; border:0px; color: black">
+            <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
+            <span>{{ post.comments|length }}</span>
+        </a>
+    </figure>
+    <hr>
+</div>
+{% endmacro %}
+
+{% macro comment_to_render(comment, current_user) %}
+<div class="col-12">
+    <figure>
+        <figcaption>
+            <b>{{ comment.user.username }}</b> <br>
+            {{ comment.creation_date.strftime('%d/%m/%Y, %H:%M') }}
+        </figcaption>
+        <p class="blockquote">{{ comment.content }}</p>
+        
+        <button onclick="like_comment(this, '{{ comment.id }}')" style="background-color:transparent; border:0px">
+            {% if current_user in comment.liked_users %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart-fill.svg') }}" alt="">
+            {% else %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
+            {% endif %}
+            <span>{{ comment.liked_users|length }}</span>
+        </button>
+        <a style="text-decoration: none; border:0px; color: black" href="{{ url_for('home.show_comment_comments', id=comment.id) }}">
+            <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
+            <span>{{ comment.comments|length }}</span>
+        </a>
+    </figure>
+    <hr>
+</div>
+{% endmacro %}
+
+{% macro back_button() %}
+<button style="background-color: transparent; border: 0px; text-decoration: none" onclick="history.back()">
+    <img style="width: 30px" src="{{ url_for('static', filename='icons/arrow-left.svg') }}" alt="">
+</button>
+{% endmacro %}
