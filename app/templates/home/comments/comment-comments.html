@@ -9,17 +9,18 @@
 <div class="mx-auto">
     {{ back_button() }}
     <div class="col-12 mt-3">
-        {% if post.referenced_post %}
-            <a href="{{ url_for('home.show_post_comments', id=post.referenced_post.id) }}">go to referenced post</a>
-        {% elif post.referenced_comment %}
-            <a href="{{ url_for('home.show_comment_comments', id=post.referenced_comment.id) }}">go to referenced comment</a>
-        {% endif %}
         <figure>
             <figcaption class="blockquite-footer">
                 <b>{{ post.user.username }}</b> <br>
                 {{ post.creation_date.strftime('%d/%m/%Y, %H:%M') }}
             </figcaption>
             <p class="blockquote comment-content">{{ post.content }}</p>
+            {% if post.referenced_post %}
+                <a href="{{ url_for('home.show_post_comments', id=post.referenced_post.id) }}">go to referenced post</a>
+            {% elif post.referenced_comment %}
+                <a href="{{ url_for('home.show_comment_comments', id=post.referenced_comment.id) }}">go to referenced comment</a>
+            {% endif %}
+            <br>
 
             <button onclick="like_comment(this, '{{ post.id }}')" style="background-color:transparent; border:0px">
                 {% if current_user in post.liked_users %}
