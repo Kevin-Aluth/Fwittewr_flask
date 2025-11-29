@@ -16,6 +16,12 @@ liked_comments = db.Table(
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+followers = db.Table(
+    'followers',
+    db.Column('followed_user', db.Integer, db.ForeignKey('user.id')),
+    db.Column('following_user', db.Integer, db.ForeignKey('user.id'))
+)
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -25,6 +31,10 @@ class User(db.Model, UserMixin):
     created_comments = db.relationship('Comment', backref='user', lazy='select')
     liked_posts = db.relationship('Post', secondary=liked_posts, backref='liked_users', lazy='select')
     liked_comments = db.relationship('Comment', secondary=liked_comments, backref = 'liked_users', lazy='select')
+    followers = db.relationship('User', secondary=followers, 
+                                primaryjoin=(followers.c.followed_user==id), 
+                                secondaryjoin=(followers.c.following_user==id), 
+                                backref='follwing', lazy='select')
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)

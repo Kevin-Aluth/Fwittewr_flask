@@ -136,4 +136,4 @@ def delete_comment():
 @login_required
 def show_user(id):
     user = User.query.filter_by(id=id).first_or_404()
-    return render_template('home/user.html', user=user)
+    return render_template('user/user.html', user=user)

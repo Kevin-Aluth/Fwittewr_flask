@@ -66,6 +66,8 @@
 		const delete_post_url = "{{ url_for('home.delete_post') }}"
 		const delete_comment_url = "{{ url_for('home.delete_comment') }}"
 
+		const follow_user_url = "{{ url_for('followers.follow_user') }}"
+
 		const url_heart_fill_src = "{{ url_for('static', filename='icons/heart-fill.svg') }}"
 		const url_heart_src = "{{ url_for('static', filename='icons/heart.svg') }}"
 		const csrf_token = "{{ csrf_token() }}"
@@ -83,9 +85,9 @@
 			.then(response => response.json() )
 			.then(responseJson => {
 				if (responseJson.result === "liked") {
-					btn.querySelector("img").src = url_heart_fill_src;
+					btn.querySelector("img").src = url_heart_fill_src
 				} else {
-					btn.querySelector("img").src = url_heart_src; 
+					btn.querySelector("img").src = url_heart_src
 				}
 	
 				btn.querySelector("span").innerText = responseJson.likes;
@@ -106,12 +108,12 @@
 			.then(response => response.json() )
 			.then(responseJson => {
 				if (responseJson.result === "liked") {
-					btn.querySelector("img").src = url_heart_fill_src;
+					btn.querySelector("img").src = url_heart_fill_src
 				} else {
-					btn.querySelector("img").src = url_heart_src; 
+					btn.querySelector("img").src = url_heart_src
 				}
 	
-				btn.querySelector("span").innerText = responseJson.likes;
+				btn.querySelector("span").innerText = responseJson.likes
 			})
 	
 		}
@@ -156,6 +158,27 @@
 				if (responseJson.result === "deleted") {
 					btn.closest("figure").querySelector(".comment-content").innerText = responseJson.content
 				}
+			})
+		}
+
+		function follow(btn, id) {
+			fetch(follow_user_url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-CSRFToken": csrf_token
+				},
+				body: JSON.stringify({"user_id": parseInt(id)})
+			})
+			.then(response => response.json())
+			.then(responseJson => {
+				if (responseJson.result === "followed") {
+					btn.innerText = "unfollow"
+				}
+				else if (responseJson.result === "unfollowed") {
+					btn.innerText = "follow"
+				}
+				btn.closest("div").querySelector("p").innerText = responseJson.user_followers + " followers"
 			})
 		}
 	</script>

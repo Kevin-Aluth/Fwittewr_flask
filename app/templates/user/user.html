@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from 'home/post-macros.html' import post_to_render, comment_to_render %}
+
+{% block title %}
+<title>User</title>
+{% endblock %}
+
+{% block body %}
+<div>
+    <p class="display-2"><b>{{ user.username }}</b></p>
+    <div>
+        <p>{{ user.followers|length }} followers</p>
+        {% if current_user != user %}
+            {% if current_user in user.followers %}
+                <button class="btn btn-primary" onclick="follow(this, '{{ user.id }}')">unfollow</button>
+            {% else %}
+                <button class="btn btn-primary" onclick="follow(this, '{{ user.id }}')">follow</button>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% if user in current_user.followers %}
+        <p>{{ user.username }} follows you!</p>
+    {% endif %}
+    {% if user.created_posts %}
+        <p class="display-3 mt-3">{{ user.username }}'s posts</p>
+        <div class="mt-2">
+        {% for post in user.created_posts | selectattr('deleted', 'equalto', False) %}
+            {{ post_to_render(post) }}
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% if user.created_comments %}
+        <p class="display-3 mt-3">{{ user.username }}'s comments</p>
+        {% for comment in user.created_comments | selectattr('deleted', 'equalto', False) %}
+            {{ comment_to_render(comment) }}
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
