@@ -17,7 +17,7 @@
             {% else %}
                 <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
             {% endif %}
-            <span>{{ post.liked_users|length }}</span>
+            <span style="color: black">{{ post.liked_users|length }}</span>
         </button>
         <a href="{{ url_for('home.show_post_comments', id=post.id) }}" style="text-decoration: none; border:0px; color: black">
             <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
@@ -43,7 +43,7 @@
             {% else %}
                 <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
             {% endif %}
-            <span>{{ comment.liked_users|length }}</span>
+            <span style="color: black">{{ comment.liked_users|length }}</span>
         </button>
         <a style="text-decoration: none; border:0px; color: black" href="{{ url_for('home.show_comment_comments', id=comment.id) }}">
             <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">

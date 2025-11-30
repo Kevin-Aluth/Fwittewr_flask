@@ -28,7 +28,7 @@
                 {% else %}
                     <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
                 {% endif %}
-                <span>{{ post.liked_users|length }}</span>
+                <span style="color: black">{{ post.liked_users|length }}</span>
             </button>
             {% if post.user == current_user %}
             <button onclick="delete_comment(this, '{{ post.id }}')" style="background-color: transparent; border: 0px; text-decoration: none">

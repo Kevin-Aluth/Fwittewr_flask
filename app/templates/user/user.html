@@ -25,14 +25,14 @@
         <p class="display-3 mt-3">{{ user.username }}'s posts</p>
         <div class="mt-2">
         {% for post in user.created_posts | selectattr('deleted', 'equalto', False) %}
-            {{ post_to_render(post) }}
+            {{ post_to_render(post, current_user) }}
         {% endfor %}
         </div>
     {% endif %}
     {% if user.created_comments %}
         <p class="display-3 mt-3">{{ user.username }}'s comments</p>
         {% for comment in user.created_comments | selectattr('deleted', 'equalto', False) %}
-            {{ comment_to_render(comment) }}
+            {{ comment_to_render(comment, current_user) }}
         {% endfor %}
     {% endif %}
 </div>
