@@ -47,4 +47,4 @@ A simple **Twitter-like social network** built with **Flask**.
 - Jinja2
 - Flask-WTF
 - Bcrypt
-- SQLite (for dev purposed, should be changed if ever put into production)
+- SQLite (for dev purposes, should be changed if ever put into production)
