@@ -1,0 +1,3 @@
+.indented-comment {
+    margin-left: calc(attr(data-level number) * 20px);
+}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'home/post-macros.html' import comment_to_render, back_button %}
+{% from 'home/post-macros.html' import comment_to_render_recursive, back_button %}
 
 {% block title %}
 <title>Comments</title>
@@ -53,7 +53,7 @@
     </form>
     <div class="mt-5">
     {% for comment in post.comments | selectattr('deleted', 'equalto', False) %}
-        {{ comment_to_render(comment, current_user) }}
+        {{ comment_to_render_recursive(comment, current_user, 0) }}
     {% endfor %}
     </div>
 </div>

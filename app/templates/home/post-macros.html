@@ -28,11 +28,48 @@
 </div>
 {% endmacro %}
 
+{% macro comment_to_render_recursive(comment, current_user, level) %}
+{% if level < 3 %}
+<div class="indented-comment" data-level="{{ level }}">
+    <figure>
+        <figcaption>
+            <a href="{{ url_for('home.show_user', id=comment.user.id) }}" style="color: black; text-decoration: none">
+                <b>{{ comment.user.username }}</b> <br>
+            </a>
+            {{ comment.creation_date.strftime('%d/%m/%Y, %H:%M') }}
+        </figcaption>
+        <p class="blockquote">{{ comment.content }}</p>
+        
+        <button onclick="like_comment(this, '{{ comment.id }}')" style="background-color:transparent; border:0px">
+            {% if current_user in comment.liked_users %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart-fill.svg') }}" alt="">
+            {% else %}
+                <img style="width: 30px" src="{{ url_for('static', filename='icons/heart.svg') }}" alt="">
+            {% endif %}
+            <span style="color: black">{{ comment.liked_users|length }}</span>
+        </button>
+        <a style="text-decoration: none; border:0px; color: black" href="{{ url_for('home.show_comment_comments', id=comment.id) }}">
+            <img style="width: 30px" src="{{ url_for('static', filename='icons/chat.svg') }}" alt="">
+            <span>{{ comment.comments|length }}</span>
+        </a>
+    </figure>
+    <hr>
+    {% if comment.comments|length > 0 %}
+        {% for child_comment in comment.comments %}
+            {{ comment_to_render_recursive(child_comment, current_user, level+1) }}
+        {% endfor %}
+    {% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+
 {% macro comment_to_render(comment, current_user) %}
 <div class="col-12">
     <figure>
         <figcaption>
-            <b>{{ comment.user.username }}</b> <br>
+            <a href="{{ url_for('home.show_user', id=comment.user.id) }}" style="color: black; text-decoration: none">
+                <b>{{ comment.user.username }}</b> <br>
+            </a>
             {{ comment.creation_date.strftime('%d/%m/%Y, %H:%M') }}
         </figcaption>
         <p class="blockquote">{{ comment.content }}</p>

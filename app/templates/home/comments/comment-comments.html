@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'home/post-macros.html' import comment_to_render, back_button %}
+{% from 'home/post-macros.html' import comment_to_render_recursive, back_button %}
 
 {% block title %}
 <title>Comments</title>
@@ -11,7 +11,9 @@
     <div class="col-12 mt-3">
         <figure>
             <figcaption class="blockquite-footer">
-                <b>{{ post.user.username }}</b> <br>
+                <a href="{{ url_for('home.show_user', id=post.user.id) }}" style="color: black; text-decoration: none">
+                    <b>{{ post.user.username }}</b> <br>
+                </a>
                 {{ post.creation_date.strftime('%d/%m/%Y, %H:%M') }}
             </figcaption>
             <p class="blockquote comment-content">{{ post.content }}</p>
@@ -20,6 +22,7 @@
             {% elif post.referenced_comment %}
                 <a href="{{ url_for('home.show_comment_comments', id=post.referenced_comment.id) }}">go to referenced comment</a>
             {% endif %}
+            <br>
             <br>
 
             <button onclick="like_comment(this, '{{ post.id }}')" style="background-color:transparent; border:0px">
@@ -48,7 +51,7 @@
     </form>
     <div class="mt-5">
     {% for comment in post.comments | selectattr('deleted', 'equalto', False) %}
-        {{ comment_to_render(comment, current_user) }}
+        {{ comment_to_render_recursive(comment, current_user, 0) }}
     {% endfor %}
     </div>
 </div>
